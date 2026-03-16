@@ -55,30 +55,18 @@ def fetch_war_news(key):
         return get_analyst_predictions()
 
 def get_analyst_predictions():
-    """Generates intelligence headlines with correct keys to prevent KeyErrors."""
     return [
         {
             "title": "CENTCOM confirms high-altitude GPS spoofing over Hormuz", 
             "source": {"name": "INTEL-WATCH"},
-            "url": "https://news.google.com" # Placeholder to prevent crash
+            "url": "https://www.aljazeera.com/tag/aviation/" # Direct link to aviation news
         },
         {
             "title": "Emirates flight EK001 rerouted via Baku due to 'Unspecified Threat'", 
             "source": {"name": "FLIGHT-ANALYSIS"},
-            "url": "https://news.google.com"
-        },
-        {
-            "title": "Oil surges past $105 as Strait of Hormuz remains contested", 
-            "source": {"name": "ENERGY-WIRE"},
-            "url": "https://news.google.com"
-        },
-        {
-            "title": "Air India 161 switches to 'Northern Corridor' over Uzbekistan", 
-            "source": {"name": "HUB-MONITOR"},
-            "url": "https://news.google.com"
+            "url": "https://www.bbc.com/news/topics/c7zp7430901t" # BBC Aviation news
         }
-    ]  
-
+    ]
 def fetch_airlabs_flights(key, hub):
     """Pulls live flights using the AirLabs v9 API."""
     url = f"https://airlabs.co/api/v9/flights?api_key={key}&arr_iata={hub}"
@@ -119,15 +107,22 @@ if airlabs_key and news_key:
         st.error(f"**Field Brief:** Heat Index at {heat_index}. Severe GPS jamming active in the Gulf sector.")
 
     with col_news:
-        st.subheader("📰 Live War Wire")
-        if articles:
-            for art in articles[:5]:
-                st.markdown(f"**{art['source']['name']}**: {art['title']}")
-                st.caption(f"[Full Intel]({art['url']})")
-                st.divider()
-        else:
-            st.warning("News feed disrupted. Check signal strength.")
-
+    st.subheader("📰 Live War Wire")
+    if articles:
+        for art in articles[:5]:
+            # Display source and title
+            source_name = art.get('source', {}).get('name', 'Intel')
+            st.markdown(f"**{source_name}**: {art['title']}")
+            
+            # THE FIX: Only show the link if it's a real article URL
+            real_url = art.get('url')
+            if real_url and "google.com" not in real_url:
+                st.link_button("🚀 Read Full Report", real_url)
+            else:
+                st.caption("🔒 Original source restricted or in Blackout mode.")
+            st.divider()
+    else:
+        st.warning("Intelligence feed disrupted. Check signal strength.")
     # BOTTOM ROW: LIVE FLIGHT DATA
     st.divider()
     st.subheader("✈️ Live Corridor Status (AirLabs Feed)")
