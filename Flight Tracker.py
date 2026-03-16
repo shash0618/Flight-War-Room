@@ -24,8 +24,11 @@ df = pd.DataFrame(columns=['Hub', 'Airline', 'Flight', 'Status', 'Origin', 'Alt'
 with st.sidebar:
     st.header("🔑 Intelligence Access")
     # PASTE YOUR NEW AIRLABS KEY HERE
-    airlabs_key = st.text_input("AirLabs API Key", type="password", value="e30427d1-2b87-41ef-a1dc-5acfc9f4da62")
-    news_key = st.text_input("NewsAPI Key", type="password", value="509093c565014da7a627cf5b30658661")
+    # NEW WAY (Pulling from Secure Vault)
+airlabs_key = st.secrets["AIRLABS_KEY"]
+news_key = st.secrets["NEWS_KEY"]
+
+st.success("🛰️ Secure Intelligence Connection Established")
     st.divider()
     st.info(f"Theater: Operation Epic Fury | Status: March 14, 2026")
 
